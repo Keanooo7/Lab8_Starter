@@ -9,6 +9,14 @@ self.addEventListener('install', function (event) {
     caches.open(CACHE_NAME).then(function (cache) {
       // B6. TODO - Add all of the URLs from RECIPE_URLs here so that they are
       //            added to the cache when the ServiceWorker is installed
+      const RECIPE_URLS = [
+        '/Users/brendankeane/Documents/GitHub/Lab8_Starter/recipes/1_50-thanksgiving-side-dishes.json',
+        '/Users/brendankeane/Documents/GitHub/Lab8_Starter/recipes/2_thanksgiving-desserts.json',
+        '/Users/brendankeane/Documents/GitHub/Lab8_Starter/recipes/3_party-favorites.json',
+        '/Users/brendankeane/Documents/GitHub/Lab8_Starter/recipes/4_surf-and-turf.json',
+        '/Users/brendankeane/Documents/GitHub/Lab8_Starter/recipes/5_chicken-soup.json',
+        '/Users/brendankeane/Documents/GitHub/Lab8_Starter/recipes/6_best-pancakes.json'
+      ];
       return cache.addAll([]);
     })
   );
@@ -34,7 +42,25 @@ self.addEventListener('fetch', function (event) {
   /*******************************/
   // B7. TODO - Respond to the event by opening the cache using the name we gave
   //            above (CACHE_NAME)
+  event.respondWith(
+    caches.open(CACHE_NAME).then(function(cache) {
   // B8. TODO - If the request is in the cache, return with the cached version.
   //            Otherwise fetch the resource, add it to the cache, and return
   //            network response.
+  return cache.match(event.request).then(function(cachedResponse) {
+    if (cachedResponse) {
+      // Return cached version if found
+      return cachedResponse;
+    }
+    
+    // Not in cache, so fetch from network
+    return fetch(event.request).then(function(networkResponse) {
+      // Add the network response to cache for future use
+      cache.put(event.request, networkResponse.clone());
+      // Return the network response
+      return networkResponse;
+     });
+     });
+    })
+  );
 });
