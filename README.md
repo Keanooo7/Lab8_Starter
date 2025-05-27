@@ -8,4 +8,4 @@ https://keanooo7.github.io/Lab8_Starter/
 
 
 -pwa.png:
-![image](/Users/brendankeane/Documents/GitHub/Lab8_Starter/pwa.png)
+![image](pwa.png)
